@@ -23,6 +23,22 @@ def get_permiso(id):
         return jsonify({'id': permiso.id, 'usuario_id': permiso.usuario_id, 'aula_id': permiso.aula_id})
     return jsonify({'message': 'Permiso de acceso no encontrado'}), 404
 
+@permisos_bp.route('/permisos/<int:id>', methods=['PUT'])
+def update_permiso(id):
+    data = request.json
+    permiso = PermisoAcceso.query.get(id)
+    
+    if permiso:
+        # Actualiza los campos del permiso con los nuevos datos
+        permiso.usuario_id = data.get('usuario_id', permiso.usuario_id)
+        permiso.aula_id = data.get('aula_id', permiso.aula_id)
+        
+        db.session.commit()
+        return jsonify({'message': 'Permiso de acceso actualizado', 'id': permiso.id})
+    
+    return jsonify({'message': 'Permiso de acceso no encontrado'}), 404
+
+
 @permisos_bp.route('/permisos/<int:id>', methods=['DELETE'])
 def delete_permiso(id):
     permiso = PermisoAcceso.query.get(id)

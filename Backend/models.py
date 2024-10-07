@@ -31,6 +31,7 @@ class Bloque(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_bloque = db.Column(db.String(255), nullable=False)
     campus_id = db.Column(db.Integer, db.ForeignKey('campus.id', ondelete='CASCADE'))
+    campus = db.relationship('Campus', backref='bloques')
 
 class Aula(db.Model):
     __tablename__ = 'aulas'
@@ -38,7 +39,7 @@ class Aula(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_aula = db.Column(db.String(255), nullable=False)
     bloque_id = db.Column(db.Integer, db.ForeignKey('bloques.id', ondelete='CASCADE'))
-
+    bloque = db.relationship('Bloque', backref='aulas')
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
     

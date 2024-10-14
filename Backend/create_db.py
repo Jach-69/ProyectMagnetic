@@ -1,6 +1,4 @@
-from mainApp import app
-from models import db
+from models import create_database
 
-with app.app_context():
-    db.create_all()
-    print("Base de datos creada.")
+if __name__ == "__main__":
+    create_database()

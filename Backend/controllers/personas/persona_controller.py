@@ -46,10 +46,13 @@ class PersonaController:
 
     @staticmethod
     def update_persona(id):
-        updated_persona = PersonaService.update_persona(id, request.json)
+        updated_data = request.json
+        # Puedes agregar validaciones aquí si es necesario
+        updated_persona = PersonaService.update_persona(id, updated_data)
         if updated_persona:
             return jsonify({'message': 'Persona actualizada'})
         return jsonify({'message': 'Persona no encontrada'}), 404
+
 
     @staticmethod
     def delete_persona(id):

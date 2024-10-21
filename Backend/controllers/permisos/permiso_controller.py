@@ -1,3 +1,4 @@
+# controllers/permiso_controller.py
 from flask import jsonify, request
 from models import db, PermisoAcceso
 
@@ -6,10 +7,18 @@ class PermisoController:
     @staticmethod
     def create_permiso():
         data = request.json
-        nuevo_permiso = PermisoAcceso(**data)  # Asegúrate de que data tenga 'persona_id' y 'aula_id'
-        db.session.add(nuevo_permiso)
-        db.session.commit()
-        return jsonify({'message': 'Permiso de acceso creado', 'id': nuevo_permiso.id}), 201
+        # Validaciones
+        if 'persona_id' not in data or 'aula_id' not in data:
+            return jsonify({'message': 'Faltan campos requeridos: persona_id y aula_id'}), 400
+        
+        try:
+            nuevo_permiso = PermisoAcceso(**data)
+            db.session.add(nuevo_permiso)
+            db.session.commit()
+            return jsonify({'message': 'Permiso de acceso creado', 'id': nuevo_permiso.id}), 201
+        except Exception as e:
+            db.session.rollback()  # Rollback en caso de error
+            return jsonify({'message': 'Error al crear el permiso', 'error': str(e)}), 500
 
     @staticmethod
     def get_permisos():

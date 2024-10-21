@@ -21,6 +21,7 @@ from routes.personas.persona_rol import persona_rol_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
 CORS(app)
 
 # Inicializa la extensión SQLAlchemy

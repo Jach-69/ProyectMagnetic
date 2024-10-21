@@ -36,6 +36,7 @@ class PersonaService:
             return persona
         return None
 
+
     @staticmethod
     def delete_persona(id):
         persona = Persona.query.get(id)

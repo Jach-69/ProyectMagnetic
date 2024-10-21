@@ -1,3 +1,4 @@
+from models.personas.rol import Rol
 from models import db, Rol
 
 class RolService:

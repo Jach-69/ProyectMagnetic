@@ -5,6 +5,8 @@ class RolesController:
     @staticmethod
     def create_rol():
         data = request.json
+        if not data or 'nombre_rol' not in data:
+            return jsonify({'message': 'Datos inválidos'}), 400
         nuevo_rol = RolService.create_rol(data)
         return jsonify({'message': 'Rol creado', 'id': nuevo_rol.id}), 201
 

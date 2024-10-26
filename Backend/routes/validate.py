@@ -4,25 +4,26 @@ from sqlalchemy import text
 
 validate_bp = Blueprint('validate', __name__)
 
-def is_user_allowed(usuario_id, aula_id):
-    # Verificar si el usuario existe y obtener el rol
-    usuario = Usuario.query.filter_by(id=usuario_id).first()
-    
+def is_user_allowed(persona_id, aula_id):
+    # Verificar si la persona tiene permiso específico para acceder a la aula
+    permiso_especifico = PermisoAcceso.query.filter_by(persona_id=persona_id, aula_id=aula_id).first()
+    if permiso_especifico:
+        return True  # Acceso concedido por permiso específico
+
+    # Verificar si la persona es un administrador
+    usuario = Usuario.query.filter_by(persona_id=persona_id).first()
     if usuario is None:
         return False  # Si el usuario no existe, se deniega el acceso
-    
-    # Verificar si el usuario es un administrador
+
     if usuario.rol_id == 1:  # Suponiendo que 1 es el ID del rol de administrador
         return True  # Acceso universal otorgado
 
-    # Verificar si el usuario tiene acceso universal
-    permiso_universal = PermisoAcceso.query.filter_by(persona_id=usuario_id, es_universal=True).first()
+    # Verificar si la persona tiene acceso universal
+    permiso_universal = PermisoAcceso.query.filter_by(persona_id=persona_id, es_universal=True).first()
     if permiso_universal:
         return True  # Acceso universal otorgado
 
-    # Verificar si el usuario tiene permiso específico para acceder a la aula
-    permiso_especifico = PermisoAcceso.query.filter_by(persona_id=usuario_id, aula_id=aula_id).first()
-    return permiso_especifico is not None
+    return False  # Si no cumple con ninguna de las condiciones, se deniega el acceso
 
 @validate_bp.route('/validate', methods=['POST'])
 def validate():

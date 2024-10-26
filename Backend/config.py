@@ -3,5 +3,5 @@ import urllib.parse
 class Config:
     # Escapar caracteres especiales en la contraseña
     password = urllib.parse.quote_plus("admin")
-    SQLALCHEMY_DATABASE_URI = f"postgresql://postgres:{password}@localhost/LAN"
+    SQLALCHEMY_DATABASE_URI = f"postgresql://postgres:{password}@localhost/LAS"
     SQLALCHEMY_TRACK_MODIFICATIONS = False

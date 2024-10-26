@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate  # Importa Flask-Migrate
 from config import Config
-from models import db  # Importa el objeto db
+from models.db import db  # Importa el objeto db
 
 # Importar blueprints
 from routes.auth import auth_bp

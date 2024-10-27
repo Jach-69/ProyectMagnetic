@@ -1,8 +1,12 @@
 from flask import Blueprint, jsonify, request
 from models import db, Usuario, Acceso, HistorialAcceso, PermisoAcceso
 from sqlalchemy import text
+import logging
 
 validate_bp = Blueprint('validate', __name__)
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 def is_user_allowed(persona_id, aula_id):
     # Verificar si la persona tiene permiso específico para acceder a la aula
@@ -32,8 +36,8 @@ def validate():
     rfid = data.get('rfid')
     aula_id = data.get('aula_id')
 
-    # Debugging: Print values to verify input
-    print(f"Clave: {clave}, RFID: {rfid}, Aula ID: {aula_id}")
+    # Log values to verify input
+    logger.info(f"Clave: {clave}, RFID: {rfid}, Aula ID: {aula_id}")
 
     # Convert empty strings to None
     if clave == '':
@@ -60,23 +64,28 @@ def validate():
     try:
         # Initializing parameters
         params = {'clave': clave, 'rfid': rfid}
-        
-        # Debugging: Print final query and params
-        print(f"Executing query: {query}, Params: {params}")
+
+        # Log final query and params
+        logger.info(f"Executing query: {query}, Params: {params}")
 
         # Execute the query
         usuario = db.session.execute(query, params).fetchone()
 
         if not usuario:
+            logger.warning("Usuario no encontrado")
             return jsonify({"status": "fail", "message": "Usuario no encontrado"}), 401
         
         # Proceed with access check
         usuario_id = usuario[0]
         persona_id = usuario[1]
-        
+
         # Verify if user is allowed in the aula
         if not is_user_allowed(persona_id, aula_id):
-            # If not allowed, return access denied
+            # Registrar el intento de acceso no válido
+            nuevo_historial = HistorialAcceso(persona_id=persona_id, aula_id=aula_id, es_valido=False)
+            db.session.add(nuevo_historial)
+            db.session.commit()  # Commit aquí para registrar el intento
+            logger.warning("Acceso denegado para el aula especificada")
             return jsonify({"status": "fail", "message": "Acceso denegado para el aula especificada"}), 401
 
         # If user is allowed, insert access record
@@ -89,10 +98,11 @@ def validate():
 
         db.session.commit()
 
+        logger.info("Acceso concedido")
         return jsonify({"status": "success", "message": "Acceso concedido"}), 200
 
     except Exception as e:
         # Detailed error log for debugging
-        print(f"Error: {str(e)}")
+        logger.error(f"Error: {str(e)}")
         db.session.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500

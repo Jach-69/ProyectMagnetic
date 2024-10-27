@@ -92,6 +92,7 @@ export default {
       modalOpen: false,
       alertOpen: false,
       alertMessage: '',
+      modalTitle: '', // Añadir esta línea
       currentOption: '',
       formData: {
         nombre: '',
@@ -99,8 +100,7 @@ export default {
         tarjeta_rfid: '',
         clave: '',
         nombre_usuario: '',
-        password: '',
-        // rolNombre: '' // Eliminar esto
+        password: ''
       },
       personas: [],
       roles: [],
@@ -154,6 +154,7 @@ export default {
 
     openModal(option) {
       this.currentOption = option;
+      this.modalTitle = option === 'crearPersona' ? 'Crear Persona' : 'Crear Rol'; // Asigna el título del modal
       this.modalOpen = true;
     },
     closeModal() {

@@ -13,4 +13,3 @@ class Persona(db.Model):
 
     usuarios = db.relationship('Usuario', backref='persona', lazy=True)
     permisos_acceso = db.relationship('PermisoAcceso', backref='persona', lazy=True)
-    roles = db.relationship('PersonaRol', backref='persona', lazy=True)

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import db, Usuario, Acceso, HistorialAcceso, PermisoAcceso
+from models import db, Usuario, HistorialAcceso, PermisoAcceso
 from sqlalchemy import text
 import logging
 
@@ -71,13 +71,13 @@ def validate():
         # Execute the query
         usuario = db.session.execute(query, params).fetchone()
 
-        if not usuario:
-            logger.warning("Usuario no encontrado")
-            return jsonify({"status": "fail", "message": "Usuario no encontrado"}), 401
-        
         # Proceed with access check
-        usuario_id = usuario[0]
-        persona_id = usuario[1]
+        if usuario:
+            usuario_id = usuario[0]
+            persona_id = usuario[1]
+        else:
+            usuario_id = None
+            persona_id = None
 
         # Verify if user is allowed in the aula
         if not is_user_allowed(persona_id, aula_id):
@@ -88,9 +88,6 @@ def validate():
             logger.warning("Acceso denegado para el aula especificada")
             return jsonify({"status": "fail", "message": "Acceso denegado para el aula especificada"}), 401
 
-        # If user is allowed, insert access record
-        nuevo_acceso = Acceso(es_valido=True, usuario_id=usuario_id, aula_id=aula_id)
-        db.session.add(nuevo_acceso)
 
         # Insert a record in the history
         nuevo_historial = HistorialAcceso(persona_id=persona_id, aula_id=aula_id, es_valido=True)

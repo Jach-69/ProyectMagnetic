@@ -5,9 +5,9 @@ import DashboardPage from '@/views/DashboardPage.vue';
 // Importar tus vistas
 import CreatePermiso from '@/views/permisos/CreatePermiso.vue';
 import ListPermiso from '@/views/permisos/ListPermiso.vue';
-import EditPermiso from '@/views/permisos/EditPermiso.vue';
+
 import ListAcceso from '@/views/accesos/ListAcceso.vue';
-import ListHistorial from '@/views/historial/ListHistorial.vue';
+
 
 // Función para verificar si el usuario está autenticado
 const isAuthenticated = () => {
@@ -34,10 +34,10 @@ const routes = [
       { path: 'permisos/create', component: CreatePermiso },
       { path: 'accesos/list', component: ListAcceso },
       { path: 'personas/list', component: () => import('@/views/personas/ListPersona.vue') },
-      { path: 'personas/edit/:id', component: () => import('@/views/personas/EditPersona.vue'), props: true },
+
       { path: 'permisos/list', component: ListPermiso },
-      { path: 'permisos/edit/:id', component: EditPermiso },
-      { path: 'historial/list', component: ListHistorial },
+
+
     ]
   },
 ];

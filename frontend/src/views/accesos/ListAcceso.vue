@@ -133,7 +133,7 @@ export default {
     },
     getPersonaName(personaId) {
       const persona = this.personas.find(p => p.id === personaId);
-      return persona ? persona.nombre : 'No definido';
+      return persona ? persona.nombre : 'Desconocido';
     },
     getAulaName(aulaId) {
       const aula = this.aulas.find(a => a.id === aulaId);
